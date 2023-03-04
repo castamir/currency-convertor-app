@@ -4,16 +4,11 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
-
-type Values = {
-  currencyFrom: string;
-  currencyTo: string;
-  amount: number;
-};
+import { ConvertCurrenciesArgs } from '../../__generated__/api';
 
 type Props = {
   currencies: { value: string }[];
-  onConvert: (values: Values) => void;
+  onConvert: (values: ConvertCurrenciesArgs) => void;
 };
 
 export const ConverterForm = ({ currencies, onConvert }: Props) => {
@@ -34,7 +29,7 @@ export const ConverterForm = ({ currencies, onConvert }: Props) => {
         });
       })}
     >
-      <Stack spacing={2} aria-describedby="converter-form">
+      <Stack spacing={2}>
         <Controller
           name="currencyFrom"
           control={control}
