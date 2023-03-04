@@ -1,4 +1,6 @@
-import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
+
+import { render, screen } from '@testing-library/react';
 
 import App from './app';
 
@@ -9,7 +11,7 @@ describe('App', () => {
   });
 
   it('should have a greeting as the title', () => {
-    const { getByText } = render(<App />);
-    expect(getByText(/Welcome client/gi)).toBeTruthy();
+    render(<App />);
+    expect(screen.getByTestId('converter-ui')).toBeInTheDocument();
   });
 });

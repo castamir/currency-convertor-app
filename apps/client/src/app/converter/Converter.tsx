@@ -13,7 +13,7 @@ export const Converter = () => {
   } = useConvertCurrencies();
 
   return (
-    <Box sx={{ width: '300px' }}>
+    <Box sx={{ width: '300px' }} data-testid="converter-ui">
       {loadingCurrencies && <Box>Loading</Box>}
 
       {!loadingCurrencies && currencies && (
