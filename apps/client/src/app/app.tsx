@@ -1,16 +1,11 @@
-import styled from '@emotion/styled';
-
-import NxWelcome from './nx-welcome';
-
-const StyledApp = styled.div`
-  // Your style here
-`;
+import Box from '@mui/material/Box';
+import { Converter } from './converter/Converter';
 
 export function App() {
   return (
-    <StyledApp>
-      <NxWelcome title="client" />
-    </StyledApp>
+    <Box>
+      <Converter />
+    </Box>
   );
 }
 
