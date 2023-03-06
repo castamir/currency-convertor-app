@@ -10,7 +10,9 @@ type Stats = {
   totalAmountInDollars: number;
 };
 
-function getMostPopularCurrency(currencyUsage: Stats['currencyUsage']): string {
+export function getMostPopularCurrency(
+  currencyUsage: Stats['currencyUsage']
+): string {
   const entries = Object.entries(currencyUsage); // i.e. ['CZK', 42], ['EUR', 4], ...
 
   const mostPopularCurrency = entries.reduce(
