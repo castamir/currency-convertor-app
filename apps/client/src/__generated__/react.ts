@@ -7,7 +7,7 @@ export function useFetchStats() {
   const [loading, setLoading] = React.useState<boolean>(true);
   const [error, setError] = React.useState<boolean>(false);
 
-  React.useEffect(() => {
+  const fetchData = React.useCallback(() => {
     fetchStats()
       .then((response) => {
         setData(response);
@@ -20,5 +20,9 @@ export function useFetchStats() {
       });
   }, [setData, setLoading, setError]);
 
-  return { data, loading, error };
+  React.useEffect(() => {
+    fetchData();
+  }, [setData, setLoading, setError]);
+
+  return { data, loading, error, refetch: fetchData };
 }
