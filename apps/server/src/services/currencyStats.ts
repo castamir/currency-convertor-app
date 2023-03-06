@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { convertCurrencies } from '../services/currencyRates';
+import { convertCurrencies } from './currencyRates';
 
 const FILE_PATH = 'currencies.stats.json';
 

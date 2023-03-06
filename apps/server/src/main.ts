@@ -12,7 +12,7 @@ import { config } from 'dotenv';
 config();
 
 if (!process.env.APILAYER_API_ID) {
-  throw new Error('Open exchange API ID is not configured.');
+  throw new Error('ApiLayer API ID is not configured.');
 }
 
 const app = express();
