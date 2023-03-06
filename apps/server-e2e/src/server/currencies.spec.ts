@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-describe('GET /', () => {
+describe('/api/currencies', () => {
   it('should return a list of currencies', async () => {
     const response = await axios.get(`/api/currencies`);
 
