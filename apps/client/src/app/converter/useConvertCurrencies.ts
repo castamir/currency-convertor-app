@@ -18,8 +18,10 @@ export function useConvertCurrencies() {
       convertCurrencies(args)
         .then((response) => {
           setData(response);
+          setError(false);
         })
         .catch(() => {
+          setData(undefined);
           setError(true);
         })
         .finally(() => {

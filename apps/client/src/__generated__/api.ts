@@ -27,3 +27,13 @@ export async function fetchCurrencies(): Promise<FetchCurrenciesResponse> {
   const response = await axios.get(`/api/currencies`);
   return response.data;
 }
+
+export type StatsResponse = {
+  requestCount: number;
+  mostPopularDestCurrency: string;
+  totalAmountInDollars: number;
+};
+export async function fetchStats(): Promise<StatsResponse> {
+  const response = await axios.get(`/api/stats`);
+  return response.data;
+}
