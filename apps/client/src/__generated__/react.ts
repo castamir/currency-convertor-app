@@ -22,7 +22,7 @@ export function useFetchStats() {
 
   React.useEffect(() => {
     fetchData();
-  }, [setData, setLoading, setError]);
+  }, [setData, setLoading, setError, fetchData]);
 
   return { data, loading, error, refetch: fetchData };
 }
