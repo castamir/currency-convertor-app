@@ -16,20 +16,30 @@ router.get('/', function (req, res) {
 });
 
 router.post('/convert', async function (req, res) {
-  const result = await convertCurrencies(
-    req.body.currencyFrom,
-    req.body.currencyTo,
-    req.body.amount
-  );
+  /*
+   todo validate request body structure,
+     - 3 letters long currencies (or known currencies)
+     - amount is a positive number
+   */
 
   res.on('finish', async () => {
     await logUsage(req.body.currencyFrom, req.body.currencyTo, req.body.amount);
   });
 
-  res.send({
-    ...req.body,
-    result,
-  });
+  try {
+    const result = await convertCurrencies(
+      req.body.currencyFrom,
+      req.body.currencyTo,
+      req.body.amount
+    );
+    res.send({
+      ...req.body,
+      result,
+    });
+  } catch (e) {
+    res.status(500);
+    res.send('internal error');
+  }
 });
 
 export default router;

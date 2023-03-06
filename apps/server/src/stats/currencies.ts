@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { convertCurrencies } from '../services/currencyRates';
 
-const FILE_PATH = '../../data/currencies.stats.json';
+const FILE_PATH = 'currencies.stats.json';
 
 type Stats = {
   requestCount: number;
@@ -11,7 +11,8 @@ type Stats = {
 };
 
 function getMostPopularCurrency(currencyUsage: Stats['currencyUsage']): string {
-  const entries = Object.entries(currencyUsage);
+  const entries = Object.entries(currencyUsage); // i.e. ['CZK', 42], ['EUR', 4], ...
+
   const mostPopularCurrency = entries.reduce(
     (top, [itemName, itemCount]) => {
       if (itemCount > top.count) {
@@ -32,38 +33,50 @@ export const logUsage = async (
 ) => {
   const { requestCount, currencyUsage, totalAmountInDollars } = readStats();
 
-  const currentUsage = currencyUsage[currencyTo] ?? 0;
-  currencyUsage[currencyTo] = currentUsage + 1;
+  try {
+    const currentUsage = currencyUsage[currencyTo] ?? 0;
+    currencyUsage[currencyTo] = currentUsage + 1;
 
-  const nextRequestCount = requestCount + 1;
-  const nextMostPopularCurrency = getMostPopularCurrency(currencyUsage);
-  const nextTotalAmountInDollars =
-    totalAmountInDollars +
-    (await convertCurrencies(currencyFrom, 'USD', amount));
+    const nextRequestCount = requestCount + 1;
+    const nextMostPopularCurrency = getMostPopularCurrency(currencyUsage);
+    const amountInDollars = await convertCurrencies(
+      currencyFrom,
+      'USD',
+      amount
+    );
 
-  const stats: Stats = {
-    requestCount: nextRequestCount,
-    mostPopularDestCurrency: nextMostPopularCurrency,
-    currencyUsage,
-    totalAmountInDollars: nextTotalAmountInDollars,
-  };
-  dumpStats(stats);
+    const nextTotalAmountInDollars =
+      Math.round((totalAmountInDollars + amountInDollars) * 1000000) / 1000000;
+
+    const stats: Stats = {
+      requestCount: nextRequestCount,
+      mostPopularDestCurrency: nextMostPopularCurrency,
+      currencyUsage,
+      totalAmountInDollars: nextTotalAmountInDollars,
+    };
+    dumpStats(stats);
+  } catch (e) {
+    // defaults to not storing data in case of an error, because of possible data inconsistency inside stats
+    console.error(e);
+  }
 };
 
 export const readStats = (): Stats => {
-  let fileContent = '{}';
   try {
-    fileContent = JSON.parse(fs.readFileSync(FILE_PATH, 'utf-8'));
+    if (fs.existsSync(FILE_PATH)) {
+      const fileContent = fs.readFileSync(FILE_PATH, 'utf8');
+      return JSON.parse(fileContent);
+    }
   } catch (err) {
     console.error(err);
   }
 
-  const json = JSON.parse(fileContent);
+  // defaults in case of missing or malformed file
   return {
-    requestCount: json?.requestCount || 0,
-    mostPopularDestCurrency: json?.mostPopularDestCurrency || '',
-    currencyUsage: json?.currencyUsage || [],
-    totalAmountInDollars: json?.totalAmountInDollars || 0,
+    requestCount: 0,
+    mostPopularDestCurrency: '',
+    currencyUsage: {},
+    totalAmountInDollars: 0,
   };
 };
 

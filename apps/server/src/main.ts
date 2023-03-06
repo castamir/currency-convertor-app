@@ -5,7 +5,15 @@
 
 import express from 'express';
 import * as path from 'path';
+import * as process from 'process';
 import routes from './routes';
+import { config } from 'dotenv';
+
+config();
+
+if (!process.env.APILAYER_API_ID) {
+  throw new Error('Open exchange API ID is not configured.');
+}
 
 const app = express();
 

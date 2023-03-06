@@ -1,3 +1,6 @@
+import axios from 'axios';
+import * as process from 'process';
+
 const cache: Record<string, { expirationTimestamp: number; rate: number }> = {};
 
 export const getConversionRate = async (
@@ -11,15 +14,30 @@ export const getConversionRate = async (
     return cache[cacheKey].rate;
   }
 
-  // todo fetch rate
-  const rate = 24;
+  try {
+    const config = {
+      headers: {
+        apikey: process.env.APILAYER_API_ID,
+      },
+    };
 
-  cache[cacheKey] = {
-    expirationTimestamp: today.setUTCDate(today.getUTCDate() + 1),
-    rate,
-  };
+    const response = await axios.get(
+      `https://api.apilayer.com/currency_data/convert?to=${currencyTo}&from=${currencyFrom}&amount=${1}`,
+      config
+    );
 
-  return rate;
+    const rate = response.data.info.quote;
+
+    cache[cacheKey] = {
+      expirationTimestamp: today.setUTCDate(today.getUTCDate() + 1),
+      rate,
+    };
+
+    return rate;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
 };
 
 export const convertCurrencies = async (
@@ -27,6 +45,12 @@ export const convertCurrencies = async (
   currencyTo: string,
   amount: number
 ): Promise<number> => {
+  if (currencyFrom === currencyTo) {
+    return amount;
+  }
+
   const rate = await getConversionRate(currencyFrom, currencyTo);
-  return rate * amount;
+
+  // round to 6 decimals
+  return Math.round(rate * amount * 1000000) / 1000000;
 };
