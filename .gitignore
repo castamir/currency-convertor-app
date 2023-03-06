@@ -5,6 +5,9 @@ dist
 tmp
 /out-tsc
 
+# config and secrets
+.env
+
 # dependencies
 node_modules
 
@@ -37,3 +40,4 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+/currencies.stats.json

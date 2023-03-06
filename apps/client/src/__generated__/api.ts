@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export type ConvertCurrenciesArgs = {
   currencyFrom: string;
   currencyTo: string;
@@ -12,44 +14,16 @@ export type ConvertCurrenciesResponse = {
 };
 
 export async function convertCurrencies(
-  args: ConvertCurrenciesArgs
+  payload: ConvertCurrenciesArgs
 ): Promise<ConvertCurrenciesResponse> {
-  // TODO replace with real API call
-
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        ...args,
-        result: 42,
-      });
-    }, 200);
-  });
+  const response = await axios.post(`/api/currencies/convert`, payload);
+  return response.data;
 }
 
 export type FetchCurrenciesResponse = {
   data: { value: string }[];
 };
 export async function fetchCurrencies(): Promise<FetchCurrenciesResponse> {
-  // TODO replace with real API call
-
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        data: [
-          {
-            value: 'USD',
-          },
-          {
-            value: 'EUR',
-          },
-          {
-            value: 'CZK',
-          },
-          {
-            value: 'GBP',
-          },
-        ],
-      });
-    }, 200);
-  });
+  const response = await axios.get(`/api/currencies`);
+  return response.data;
 }
